@@ -1,0 +1,15 @@
+\B\.hg\b
+^\.hgignore$
+^\.stuff/
+
+^MANIFEST\.
+^Makefile$
+\.old$
+\.bak$
+^blib/
+^MakeMaker-\d
+^pm_to_blib$
+
+^dump\.rdb$
+
+^[^\/]*\.tar\.gz$
