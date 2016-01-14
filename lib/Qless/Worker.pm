@@ -31,7 +31,7 @@ sub new {
     );
 	$redis_params{'server'} = $opt{'host'} if $opt{'host'};
 	$redis_params{'sock'}   = $opt{'socket'} if $opt{'socket'};
-	$self->{'redis'}  = Redis->new(%redis_params);
+	$self->{'redis'}  = $opt{'redis'} || Redis->new(%redis_params);
 
 
 	# Qless client and queues
