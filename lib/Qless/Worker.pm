@@ -24,7 +24,11 @@ sub new {
 	#Redis server
 	$opt{'host'} ||= '127.0.0.1:6379' if !$opt{'socket'};
 	$self->debug('Connecting to Redis server at '.($opt{'socket'} || $opt{'host'}));
-	my %redis_params        = (encoding => undef);
+	my %redis_params = $opt{redis_params} || (
+        encoding => undef,
+        reconnect => 60,
+        every => 1_000_000
+    );
 	$redis_params{'server'} = $opt{'host'} if $opt{'host'};
 	$redis_params{'sock'}   = $opt{'socket'} if $opt{'socket'};
 	$self->{'redis'}  = Redis->new(%redis_params);
