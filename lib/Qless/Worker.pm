@@ -45,6 +45,8 @@ sub new {
 	$self->{'workers_max'} = $opt{'workers'} || 5;
 	$self->{'workers'} = {};
 
+    $self->{'debug_handler'} = $opt{'debug_handler'} || sub { print "$_[0]\n" };
+
 	$self;
 }
 
@@ -122,7 +124,7 @@ sub run {
 
 sub debug {
 	return if !$_[0]->{'debug'};
-	print $_[1],"\n";
+    $_[0]->{debug_handler}->($_[1]);
 }
 
 1;
