@@ -24,10 +24,14 @@ sub new {
 	#Redis server
 	$opt{'host'} ||= '127.0.0.1:6379' if !$opt{'socket'};
 	$self->debug('Connecting to Redis server at '.($opt{'socket'} || $opt{'host'}));
-	my %redis_params        = (encoding => undef);
+	my %redis_params = $opt{redis_params} || (
+        encoding => undef,
+        reconnect => 60,
+        every => 1_000_000
+    );
 	$redis_params{'server'} = $opt{'host'} if $opt{'host'};
 	$redis_params{'sock'}   = $opt{'socket'} if $opt{'socket'};
-	$self->{'redis'}  = Redis->new(%redis_params);
+	$self->{'redis'}  = $opt{'redis'} || Redis->new(%redis_params);
 
 
 	# Qless client and queues
@@ -40,6 +44,8 @@ sub new {
 	$self->{'interval'} = $opt{'interval'};
 	$self->{'workers_max'} = $opt{'workers'} || 5;
 	$self->{'workers'} = {};
+
+    $self->{'debug_handler'} = $opt{'debug_handler'} || sub { print "$_[0]\n" };
 
 	$self;
 }
@@ -118,7 +124,7 @@ sub run {
 
 sub debug {
 	return if !$_[0]->{'debug'};
-	print $_[1],"\n";
+    $_[0]->{debug_handler}->($_[1]);
 }
 
 1;
